@@ -15,53 +15,56 @@ var bodyObj = {
   demand: true,
   alias: 'b'
 };
+if(process.argv.length > 2){
+  var command = process.argv[2];
+  var inputArgs = yargs
+  .command("add","Add a new note",{title:titleObj,body:bodyObj})                                   //Important implementation of .command
+  .command("remove","Remove a note",{title:titleObj})
+  .command("list","List all the notes")
+  .command("read","View a note",{title:titleObj})
+  .help()
+  .argv;
 
-var command = process.argv[2];
-var inputArgs = yargs
-.command("add","Add a new note",{title:titleObj,body:bodyObj})                                   //Important implementation of .command
-.command("remove","Remove a note",{title:titleObj})
-.command("list","List all the notes")
-.command("read","View a note",{title:titleObj})
-.help()
-.argv;
+  // ======================================================================================
+  if(command.toLowerCase() === 'add'){
 
-// ======================================================================================
-if(command.toLowerCase() === 'add'){
+    add.append(inputArgs.title, inputArgs.body);
 
-  add.append(inputArgs.title, inputArgs.body);
+  } // ======================================================================================
+  else if(command.toLowerCase() === 'list'){
 
-} // ======================================================================================
-else if(command.toLowerCase() === 'list'){
+    var allNotes = add.getAll();
+    console.log(`The number of notes is: ${allNotes.length}`);
+    allNotes.forEach(function(item){
+      console.log(`Title: ${item.title} \n Content: ${item.body}`);
+    })
 
-  var allNotes = add.getAll();
-  console.log(`The number of notes is: ${allNotes.length}`);
-  allNotes.forEach(function(item){
-    console.log(`Title: ${item.title} \n Content: ${item.body}`);
-  })
+  }// ======================================================================================
+  else if(command.toLowerCase() === 'remove'){
 
-}// ======================================================================================
-else if(command.toLowerCase() === 'remove'){
+    add.remove(inputArgs.title);
 
-  add.remove(inputArgs.title);
+  }// ======================================================================================
+  else if(command.toLowerCase() === 'read'){
 
-}// ======================================================================================
-else if(command.toLowerCase() === 'read'){
+    var note = add.fetch(inputArgs.title);
+    debugger;
+    if(note)
+    {
+      console.log("Node found!!!");
+      console.log(`Title: ${note.title} \n Content: ${note.body}`);
+    }
+    else
+    {
+      console.log('No such note exists!');
+    }
 
-  var note = add.fetch(inputArgs.title);
-  debugger;
-  if(note)
-  {
-    console.log("Node found!!!");
-    console.log(`Title: ${note.title} \n Content: ${note.body}`);
+  }// ======================================================================================
+  else {
+
+    console.log('Unrecognised input.');
+
   }
-  else
-  {
-    console.log('No such note exists!');
-  }
-
-}// ======================================================================================
-else {
-
-  console.log('Unrecognised input.');
-
+} else {
+  console.log("Please enter a command. Commands are: \n add  \n remove \n list \n read");
 }
